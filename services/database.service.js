@@ -1,3 +1,5 @@
+const { drizzle } = require("drizzle-orm");
+const { Pool } = require("pg");
 const dbsConfig = require("../config").dbs;
 const logger = require("./logger.service")(module);
 
@@ -13,6 +15,8 @@ class Database {
 
   #connection;
 
+  #drizzleInstance;
+
   constructor(config) {
     this.#uri = config.uri;
     this.#id = config.id;
@@ -25,7 +29,11 @@ class Database {
    */
   async connect() {
     try {
-      // todo: метод установки соединения с БД
+      const pool = new Pool({
+        connectionString: this.#uri,
+      });
+      this.#connection = pool;
+      this.#drizzleInstance = drizzle(pool);
       logger.info(`Connected to ${this.#id}`);
     } catch (error) {
       logger.error(`Unable to connect to ${this.#id}:`, error.message);
@@ -39,7 +47,7 @@ class Database {
   async disconnect() {
     if (this.#connection) {
       try {
-        // todo: метод закрытия соединения с БД
+        await this.#connection.end();
         logger.info(`Disconnected from ${this.#id}`);
       } catch (error) {
         logger.error(`Unable to disconnect from ${this.#id}:`, error.message);
@@ -48,11 +56,11 @@ class Database {
   }
 
   /**
-   * Возвращает объект соединения с БД,
+   * Возвращает объект Drizzle.
    * @return {Object}
    */
-  get connection() {
-    return this.#connection;
+  get orm() {
+    return this.#drizzleInstance;
   }
 }
 
