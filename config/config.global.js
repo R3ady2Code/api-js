@@ -15,8 +15,8 @@ config.env.test = process.env.NODE_ENV === "test";
 // DB SETTINGS
 config.dbs = {};
 config.dbs.sample_db = {};
-config.dbs.sample_db.uri = "postgres://root:12345@localhost:5432/postgres";
-config.dbs.sample_db.database = "postgres";
+config.dbs.sample_db.uri = "postgres://root:12345@localhost:5432/sample_db";
+config.dbs.sample_db.database = "sample_db";
 config.dbs.sample_db.id = "sample_db";
 
 // LOG SETTINGS
@@ -45,7 +45,7 @@ config.cors.exposedHeaders = ["X-Total-Count", "Content-Type", "Authorization"];
 
 // JWT SERVICE SETTINGS
 config.jwt = {};
-config.jwt.secretKey = "";
+config.jwt.secretKey = "12345";
 config.jwt.sign = {};
 config.jwt.sign.issuer = "Test API js backend";
 config.jwt.sign.audience = "";

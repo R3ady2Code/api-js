@@ -1,4 +1,4 @@
-const { drizzle } = require("drizzle-orm");
+const { drizzle } = require("drizzle-orm/node-postgres");
 const { Pool } = require("pg");
 const dbsConfig = require("../config").dbs;
 const logger = require("./logger.service")(module);

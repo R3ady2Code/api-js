@@ -13,7 +13,7 @@ const jwtConfig = require("../../../config").jwt;
  */
 async function getAuth(req, res) {
   logger.init("get user auth");
-  const { user } = req.query;
+  const { user } = req.body;
 
   const token = new JwtService(jwtConfig).encode(user).data;
 
