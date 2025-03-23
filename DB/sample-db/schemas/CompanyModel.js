@@ -8,7 +8,7 @@ const {
   jsonb,
 } = require("drizzle-orm/pg-core");
 
-module.exports = pgTable("companies", {
+const companies = pgTable("companies", {
   id: serial("id").primaryKey(),
   contactId: integer("contact_id").notNull(),
   name: text("name").notNull(),
@@ -21,3 +21,5 @@ module.exports = pgTable("companies", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+module.exports = { companies };

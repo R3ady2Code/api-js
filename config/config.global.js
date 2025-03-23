@@ -15,8 +15,8 @@ config.env.test = process.env.NODE_ENV === "test";
 // DB SETTINGS
 config.dbs = {};
 config.dbs.sample_db = {};
-config.dbs.sample_db.uri = "mongodb://user:password@db_host";
-config.dbs.sample_db.database = "db_name";
+config.dbs.sample_db.uri = "postgres://root:12345@localhost:5432/postgres";
+config.dbs.sample_db.database = "postgres";
 config.dbs.sample_db.id = "sample_db";
 
 // LOG SETTINGS
