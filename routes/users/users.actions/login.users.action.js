@@ -1,11 +1,9 @@
-const { eq } = require("drizzle-orm");
 const logger = require("../../../services/logger.service")(module);
-const { OK, UNAUTHORIZED } = require("../../../constants/http-codes");
+const { UserModel } = require("../../../DB/sample-db/models/UserModel");
 const JwtService = require("../../../services/jwt.service");
 const jwtConfig = require("../../../config").jwt;
-const { users } = require("../../../DB/sample-db/schemas/UserModel");
-const { sampleDB } = require("../../../services/database.service");
 const { comparePassword } = require("../../../helpers/password.helper");
+const { OK, UNAUTHORIZED } = require("../../../constants/http-codes");
 
 /**
  * POST /user/login
@@ -19,11 +17,7 @@ async function login(req, res) {
   const { username, password } = req.body;
 
   try {
-    const [user] = await sampleDB.orm
-      .select()
-      .from(users)
-      .where(eq(users.username, username))
-      .limit(1);
+    const user = await UserModel.find(username);
 
     if (!user) {
       logger.error("Invalid credentials");

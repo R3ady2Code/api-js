@@ -9,7 +9,9 @@
     "test": "NODE_ENV=test node node_modules/.bin/jest --runInBand --silent --detectOpenHandles",
     "pretty": "prettier --write \"./**/*.{js,jsx,json}\"",
     "check-pretty": "prettier --check \"./**/*.{js,jsx,json}\"",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "migrate:generate": "npx drizzle-kit generate",
+    "migrate": "npx drizzle-kit migrate"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

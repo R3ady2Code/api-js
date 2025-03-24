@@ -1,9 +1,7 @@
-const { eq } = require("drizzle-orm");
 const logger = require("../../../services/logger.service")(module);
-const { CREATED, BAD_REQUEST } = require("../../../constants/http-codes");
-const { users } = require("../../../DB/sample-db/schemas/UserModel");
-const { sampleDB } = require("../../../services/database.service");
+const { UserModel } = require("../../../DB/sample-db/models/UserModel");
 const { hashPassword } = require("../../../helpers/password.helper");
+const { CREATED, BAD_REQUEST } = require("../../../constants/http-codes");
 
 /**
  * POST /user/register
@@ -17,10 +15,7 @@ async function register(req, res) {
   const { username, password } = req.body;
 
   try {
-    const existingUser = await sampleDB.orm
-      .select()
-      .from(users)
-      .where(eq(users.username, username));
+    const existingUser = await UserModel.find(username);
 
     if (existingUser.length > 0) {
       logger.error("Имя пользователя уже занято");
@@ -31,13 +26,10 @@ async function register(req, res) {
 
     const hashedPassword = await hashPassword(password);
 
-    const [newUser] = await sampleDB.orm
-      .insert(users)
-      .values({
-        username,
-        password: hashedPassword,
-      })
-      .returning();
+    const [newUser] = await UserModel.create({
+      username,
+      password: hashedPassword,
+    });
 
     logger.success();
     return res
