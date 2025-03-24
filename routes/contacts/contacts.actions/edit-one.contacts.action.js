@@ -1,6 +1,6 @@
 const logger = require("../../../services/logger.service")(module);
 const { OK, NOT_FOUND } = require("../../../constants/http-codes");
-const ContactModel = require("../../../DB/sample-db/models/ContactModel");
+const { ContactModel } = require("../../../DB/sample-db/models/ContactModel");
 
 /**
  * PATCH /contacts/:id

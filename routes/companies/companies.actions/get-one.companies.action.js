@@ -1,6 +1,6 @@
 const logger = require("../../../services/logger.service")(module);
 const { OK, NOT_FOUND } = require("../../../constants/http-codes");
-const CompanyModel = require("../../../DB/sample-db/models/CompanyModel");
+const { CompanyModel } = require("../../../DB/sample-db/models/CompanyModel");
 
 /**
  * GET /companies/:id

@@ -1,6 +1,6 @@
 const logger = require("../../../services/logger.service")(module);
 const { OK, NOT_FOUND } = require("../../../constants/http-codes");
-const CompanyModel = require("../../../DB/sample-db/models/CompanyModel");
+const { CompanyModel } = require("../../../DB/sample-db/models/CompanyModel");
 
 /**
  * PATCH /companies/:id
@@ -15,7 +15,7 @@ async function editOne(req, res) {
   const data = req.body;
 
   try {
-    const [company] = await CompanyModel.findById(id);
+    const [company] = await CompanyModel.find(id);
 
     if (!company) {
       logger.error("Company not found");

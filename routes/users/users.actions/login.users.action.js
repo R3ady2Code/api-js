@@ -17,7 +17,7 @@ async function login(req, res) {
   const { username, password } = req.body;
 
   try {
-    const user = await UserModel.find(username);
+    const [user] = await UserModel.find(username);
 
     if (!user) {
       logger.error("Invalid credentials");
@@ -27,6 +27,7 @@ async function login(req, res) {
     }
 
     const isPasswordValid = await comparePassword(password, user.password);
+
     if (!isPasswordValid) {
       logger.error("Invalid credentials");
       return res
@@ -43,6 +44,7 @@ async function login(req, res) {
     logger.success();
     return res.status(OK).json({ token });
   } catch (error) {
+    console.log(error);
     logger.error("Ошибка при логине пользователя", error);
     return res.status(500).json({ message: "Ошибка сервера" });
   }

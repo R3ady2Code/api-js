@@ -21,6 +21,22 @@ const editOne = [
   validate,
 ];
 
+const getAll = [
+  check("name").optional().isString().withMessage({
+    code: UnprocessableEntity,
+    message: "name: parameter must be a string",
+  }),
+  check("page").optional().isInt({ min: 1 }).withMessage({
+    code: UnprocessableEntity,
+    message: "page: parameter must be a positive integer",
+  }),
+  check("limit").optional().isInt({ min: 1 }).withMessage({
+    code: UnprocessableEntity,
+    message: "limit: parameter must be a positive integer",
+  }),
+  validate,
+];
+
 const addImage = [
   check("id").isNumeric().withMessage({
     code: UnprocessableEntity,
@@ -69,4 +85,4 @@ const removeImage = [
   validate,
 ];
 
-module.exports = { getOne, editOne, addImage, removeImage };
+module.exports = { getOne, editOne, addImage, removeImage, getAll };
