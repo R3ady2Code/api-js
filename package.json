@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "migrate:generate": "npx drizzle-kit generate",
     "migrate": "npx drizzle-kit migrate",
-    "seed": "node drizzle/seeds/index.js"
+    "seed": "node drizzle/seeds/index.js",
+    "start:task": "npm run migrate && npm run seed && npm run start-dev"
   },
   "dependencies": {
     "@faker-js/faker": "^9.6.0",
