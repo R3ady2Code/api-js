@@ -1,7 +1,6 @@
 const logger = require("../../../services/logger.service")(module);
-const { OK } = require("../../../constants/http-codes");
-const contactMethods = require("../../../DB/sample-db/methods/contact");
-const { NotFound } = require("../../../constants/errors");
+const { OK, NOT_FOUND } = require("../../../constants/http-codes");
+const ContactModel = require("../../../DB/sample-db/models/ContactModel");
 
 /**
  * PATCH /contacts/:id
@@ -15,15 +14,21 @@ async function editOne(req, res) {
   const { id } = req.params;
   const data = req.body;
 
-  const contact = contactMethods.getOne(id);
-  if (!contact) {
-    throw new NotFound("Contact not found");
+  try {
+    const [contact] = await ContactModel.findById(id);
+    if (!contact) {
+      logger.error("Contact not found");
+      return res.status(NOT_FOUND).json({ message: "Контакт не найден" });
+    }
+
+    const [updatedContact] = await ContactModel.update(id, data);
+
+    logger.success();
+    return res.status(OK).json(updatedContact);
+  } catch (error) {
+    logger.error("Ошибка при редактировании контакта", error);
+    return res.status(500).json({ message: "Ошибка сервера" });
   }
-
-  const updated = contactMethods.editOne(id, data);
-
-  res.status(OK).json(updated);
-  logger.success();
 }
 
 module.exports = {

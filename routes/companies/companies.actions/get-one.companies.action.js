@@ -1,9 +1,6 @@
 const logger = require("../../../services/logger.service")(module);
-const { OK } = require("../../../constants/http-codes");
-const companyMethods = require("../../../DB/sample-db/methods/company");
-const { getUrlForRequest } = require("../../../helpers/url.helper");
-const { NotFound } = require("../../../constants/errors");
-const { parseOne } = require("../companies.service");
+const { OK, NOT_FOUND } = require("../../../constants/http-codes");
+const CompanyModel = require("../../../DB/sample-db/models/CompanyModel");
 
 /**
  * GET /companies/:id
@@ -16,15 +13,20 @@ async function getOne(req, res) {
   logger.init("get company");
   const { id } = req.params;
 
-  const company = companyMethods.getOne(id);
-  if (!company) {
-    throw new NotFound("Company not found");
+  try {
+    const [company] = await CompanyModel.find(id);
+
+    if (!company) {
+      logger.error("Company not found");
+      return res.status(NOT_FOUND).json({ message: "Компания не найдена" });
+    }
+
+    logger.success();
+    return res.status(OK).json(company);
+  } catch (error) {
+    logger.error("Ошибка при получении компании", error);
+    return res.status(500).json({ message: "Ошибка сервера" });
   }
-
-  const photoUrl = getUrlForRequest(req);
-
-  res.status(OK).json(parseOne(company, photoUrl));
-  logger.success();
 }
 
 module.exports = {

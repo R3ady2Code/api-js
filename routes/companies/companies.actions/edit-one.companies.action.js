@@ -1,13 +1,10 @@
 const logger = require("../../../services/logger.service")(module);
-const { OK } = require("../../../constants/http-codes");
-const companyMethods = require("../../../DB/sample-db/methods/company");
-const { parseOne } = require("../companies.service");
-const { getUrlForRequest } = require("../../../helpers/url.helper");
-const { NotFound } = require("../../../constants/errors");
+const { OK, NOT_FOUND } = require("../../../constants/http-codes");
+const CompanyModel = require("../../../DB/sample-db/models/CompanyModel");
 
 /**
  * PATCH /companies/:id
- * Эндпоинт редактирования данных компании.
+ * Эндпоинт обновления данных компании.
  * @param {Object} req
  * @param {Object} res
  * @return {Promise<void>}
@@ -17,16 +14,25 @@ async function editOne(req, res) {
   const { id } = req.params;
   const data = req.body;
 
-  const company = companyMethods.getOne(id);
-  if (!company) {
-    throw new NotFound("Company not found");
+  try {
+    const [company] = await CompanyModel.findById(id);
+
+    if (!company) {
+      logger.error("Company not found");
+      return res.status(NOT_FOUND).json({ message: "Company not found" });
+    }
+
+    const [updatedCompany] = await CompanyModel.updateCompany(id, {
+      ...data,
+      updatedAt: new Date(),
+    });
+
+    logger.success();
+    return res.status(OK).json(updatedCompany);
+  } catch (error) {
+    logger.error("Ошибка при обновлении компании", error);
+    return res.status(500).json({ message: "Ошибка сервера" });
   }
-
-  const updated = companyMethods.editOne(id, data);
-
-  const photoUrl = getUrlForRequest(req);
-  res.status(OK).json(parseOne(updated, photoUrl));
-  logger.success();
 }
 
 module.exports = {

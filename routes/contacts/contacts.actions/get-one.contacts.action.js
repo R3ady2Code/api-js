@@ -1,7 +1,6 @@
 const logger = require("../../../services/logger.service")(module);
-const { OK } = require("../../../constants/http-codes");
-const contactMethods = require("../../../DB/sample-db/methods/contact");
-const { NotFound } = require("../../../constants/errors");
+const { OK, NOT_FOUND } = require("../../../constants/http-codes");
+const ContactModel = require("../../../DB/sample-db/models/ContactModel");
 
 /**
  * GET /contacts/:id
@@ -14,13 +13,20 @@ async function getOne(req, res) {
   logger.init("get contact");
   const { id } = req.params;
 
-  const contact = contactMethods.getOne(id);
-  if (!contact) {
-    throw new NotFound("Contact not found");
-  }
+  try {
+    const [contact] = await ContactModel.findById(id);
 
-  res.status(OK).json(contact);
-  logger.success();
+    if (!contact) {
+      logger.error("Contact not found");
+      return res.status(NOT_FOUND).json({ message: "Контакт не найден" });
+    }
+
+    logger.success();
+    return res.status(OK).json(contact);
+  } catch (error) {
+    logger.error("Ошибка при получении контакта", error);
+    return res.status(500).json({ message: "Ошибка сервера" });
+  }
 }
 
 module.exports = {
